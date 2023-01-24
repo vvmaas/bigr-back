@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int          @id @default(autoincrement())
+  email      String       @unique @db.VarChar(255)
+  password   String?       @db.VarChar(255)
+  height    Int
+  weight    Int
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Session    Session[]
+  Diary    Diary[]
+  Workout    Workout[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Workout {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  WorkoutExercise    WorkoutExercise[]
+}
+
+model Exercise {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  WorkoutExercise    WorkoutExercise[]
+}
+
+model WorkoutExercise {
+  id        Int      @id @default(autoincrement())
+  exerciseId    Int
+  Exercise      Exercise     @relation(fields: [exerciseId], references: [id])
+  workoutId    Int
+  Workout      Workout     @relation(fields: [workoutId], references: [id])
+  sets      Int
+  repetitions      Int
+  weight      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Diary {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  Date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
