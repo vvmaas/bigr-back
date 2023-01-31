@@ -5,7 +5,7 @@ import { authenticateToken } from "@/middlewares";
 const userRouter = Router();
 
 userRouter
-  .post("/create", createUser)
+  .post("/", createUser)
   .all("/*", authenticateToken)
   .get("/:id", findUser)
   .put("/:id", updateUser)

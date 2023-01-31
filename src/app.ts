@@ -19,7 +19,7 @@ app
   .use(cors())
   .use(express.json())
   .get("/health", (_req, res) => res.send("OK!"))
-  .use("/user", userRouter)
+  .use("/users", userRouter)
   .use("/auth", authenticationRouter)
   .use("/workout", workoutRouter)
   .use("/diary", diaryRouter)
