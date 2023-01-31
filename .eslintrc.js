@@ -79,7 +79,7 @@ module.exports = {
       "no-console": "warn",
       "boundaries/element-types": [2, {
         "default": "disallow",
-        "message": "${file.type} não podem importar ${dependency.type}",
+        "message": "${file.type} cannot import ${dependency.type}",
         "rules": [
           {
             "from": ["controllers"],
