@@ -2,11 +2,11 @@ import { createWE } from "@/modules/controllers";
 import { Router } from "express";
 import { authenticateToken } from "@/middlewares";
 
-const diaryRouter = Router();
+const weRouter = Router();
 
-diaryRouter
+weRouter
   .all("/*", authenticateToken)
   .post("/", createWE)
 ;
 
-export { diaryRouter };
+export { weRouter };

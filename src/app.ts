@@ -8,6 +8,7 @@ import {
   authenticationRouter,
   workoutRouter,
   diaryRouter,
+  weRouter
 } from "@/routers";
 
 import { loadEnv, connectDb, disconnectDB } from "@/config";
@@ -22,6 +23,7 @@ app
   .use("/users", userRouter)
   .use("/auth", authenticationRouter)
   .use("/workout", workoutRouter)
+  .use("/workoutexercise", weRouter)
   .use("/diary", diaryRouter)
 ;
   
