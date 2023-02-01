@@ -16,24 +16,32 @@ export async function getWorkouts(req: AuthenticatedRequest, res: Response) {
 
 export async function getWorkout(req: AuthenticatedRequest, res: Response) {
   const { id } = req.params;
+  const { userId } = req;
   
   try {
-    const workout = await workoutService.getWorkout(Number(id));
+    const workout = await workoutService.getWorkout(Number(id), userId);
     return res.status(httpStatus.OK).send(workout);    
   } catch (error) {
-    return res.sendStatus(httpStatus.NOT_FOUND);
+    if(error.name === "notFoundError") {
+      return res.sendStatus(httpStatus.NOT_FOUND);
+    }
+    if(error.name === "UnauthorizedError") {
+      return res.sendStatus(httpStatus.UNAUTHORIZED);
+    }
+    return res.sendStatus(httpStatus.BAD_REQUEST);
   }
 }
 
 export async function postWorkout(req: AuthenticatedRequest, res: Response) {
   try {
-    await workoutService.postWorkout({ 
+    const workout = await workoutService.postWorkout({ 
       ...req.body,
       userId: req.userId
     });
-    return res.sendStatus(httpStatus.CREATED);    
+    
+    return res.sendStatus(httpStatus.CREATED).send(workout);    
   } catch (error) {
-    return res.sendStatus(httpStatus.NOT_FOUND);
+    return res.sendStatus(httpStatus.BAD_REQUEST);
   }
 }
 
@@ -47,6 +55,6 @@ export async function updateWorkout(req: AuthenticatedRequest, res: Response) {
     });
     return res.sendStatus(httpStatus.OK);    
   } catch (error) {
-    return res.sendStatus(httpStatus.NOT_FOUND);
+    return res.sendStatus(httpStatus.BAD_REQUEST);
   }
 }

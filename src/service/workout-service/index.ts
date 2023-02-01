@@ -1,16 +1,19 @@
 import workoutRepository, { UpdateWorkoutParams, CreateWorkoutParams } from "@/modules/repositories/workout-repository";
-import userRepository from "@/modules/repositories/user-repository";
 import workoutExerciseRepository from "@/modules/repositories/workoutexercise-repository";
-import { invalidDataError } from "@/errors";
+import { badRequestError, unauthorizedError } from "@/errors";
 
 async function getWorkouts(userId: number) {
   const workouts = await workoutRepository.findAll(userId);
   return workouts;
 } 
 
-async function getWorkout(id: number) {
+async function getWorkout(id: number, userId: number) {
   const workout = await workoutRepository.find(id);
   const exercises = await workoutExerciseRepository.findByStage(id, workout.stage);
+
+  if(workout.userId !== userId) {
+    throw unauthorizedError();
+  }
 
   const workoutExercises = {
     ...workout,
@@ -20,9 +23,8 @@ async function getWorkout(id: number) {
 } 
 
 async function postWorkout(params: CreateWorkoutParams) {
-  const user = await userRepository.findById(params.userId);
-  if(!user) {
-    throw invalidDataError();
+  if(!params.name) {
+    throw badRequestError();
   }
   const workout = await workoutRepository.create(params);
   return workout;
