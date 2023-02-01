@@ -9,7 +9,7 @@
     "migration:run": "prisma migrate deploy",
     "migration:generate": "npm run dev:load-envs prisma migrate dev",
     "lint": "eslint .",
-    "test": "NODE_ENV=test jest --passWithNoTests --runInBand",
+    "test": "NODE_ENV=test jest --passWithNoTests --runInBand --detectOpenHandles",
     "test:migration:run": "npm run test:load-envs prisma migrate deploy",
     "test:migration:generate": "npm run test:load-envs prisma migrate dev",
     "test:watch": "jest --watch --passWithNoTests --runInBand",

@@ -2,7 +2,8 @@ import bcrypt from "bcrypt";
 import userRepository from "@/modules/repositories/user-repository";
 import { CreateUserParams, UpdateUserParams } from "@/modules/repositories/user-repository";
 import { duplicatedEmailError } from "./errors";
-import { invalidDataError } from "@/errors";
+import { badRequestError, invalidDataError } from "@/errors";
+import { exclude } from "@/utils/prisma-utils";
 
 export async function createUser({ email, password }: CreateUserParams) {
   await validateUniqueEmailOrFail(email);
@@ -14,20 +15,29 @@ export async function createUser({ email, password }: CreateUserParams) {
   });
 }
 
-export async function updateUser({ height, weight, name }: UpdateUserParams, id: number) {
-  return userRepository.update({
-    height,
-    weight,
-    name
+export async function updateUser(data: UpdateUserParams, id: number) {
+  if(!data || !data.name || !data.weight || !data.height) {
+    throw badRequestError();
+  }
+
+  const update = await userRepository.update({
+    ...data
   }, id);
+
+  return update;
 }
 
 export async function findUser(id: number) {
+  if(isNaN(id) || id <= 0) {
+    throw badRequestError();
+  }
+
   const user = await userRepository.findById(id);
+  
   if(!user) {
     throw invalidDataError();
   }
-  return user;
+  return exclude(user, "password");
 }
 
 async function validateUniqueEmailOrFail(email: string) {

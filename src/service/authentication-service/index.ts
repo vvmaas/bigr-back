@@ -5,9 +5,14 @@ import { exclude } from "@/utils/prisma-utils";
 import { invalidCredentialsError } from "./errors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { badRequestError } from "@/errors";
 
 async function signIn(params: SignInParams): Promise<SignInResult> {
   const { email, password } = params;
+
+  if(!email || !password) {
+    throw badRequestError();
+  }
 
   const user = await getUserOrFail(email);
 

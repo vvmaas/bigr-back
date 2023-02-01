@@ -21,9 +21,15 @@ export async function createUser(req: Request, res: Response) {
 }
 
 export async function updateUser(req: AuthenticatedRequest, res: Response) {
-  const id = req.params;
+  const { userId } = req;
   try {
-    await userService.updateUser({ ...req.body }, Number(id));
+    const update = await userService.updateUser({ ...req.body }, Number(userId));
+    return res.status(httpStatus.OK).send({
+      id: update.id,
+      name: update.name,
+      weight: update.weight,
+      height: update.height,
+    });
   } catch (error) {
     return res.status(httpStatus.BAD_REQUEST).send(error);
   }
@@ -31,8 +37,10 @@ export async function updateUser(req: AuthenticatedRequest, res: Response) {
 
 export async function findUser(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
+  
   try {
-    await userService.findUser(userId);
+    const user = await userService.findUser(userId);
+    return res.status(httpStatus.OK).send(user);
   } catch (error) {
     return res.status(httpStatus.BAD_REQUEST).send(error);
   }

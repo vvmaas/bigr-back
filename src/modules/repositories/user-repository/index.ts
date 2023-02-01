@@ -1,5 +1,4 @@
 import { prisma } from "@/config";
-import { Prisma } from "@prisma/client";
 import { User } from "@prisma/client";
 
 async function create(data: CreateUserParams) {
@@ -10,33 +9,29 @@ async function create(data: CreateUserParams) {
 
 async function update(data: UpdateUserParams, id: number) {
   return prisma.user.update({
-    data: {
-      ...data
-    },
     where: {
       id
+    },
+    data: {
+      ...data
     }
   });
 }
 
 async function findByEmail(email: string) {
-  const params: Prisma.UserFindUniqueArgs = {
+  return prisma.user.findUnique({
     where: {
       email,
     },
-  };
-  
-  return prisma.user.findUnique(params);
+  });
 }
 
 async function findById(id: number) {
-  const params: Prisma.UserFindUniqueArgs = {
+  return prisma.user.findUnique({
     where: {
       id,
     },
-  };
-  
-  return prisma.user.findUnique(params);
+  });
 }
 
 export type CreateUserParams = Pick<User, "email" | "password">;

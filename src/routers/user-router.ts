@@ -7,8 +7,8 @@ const userRouter = Router();
 userRouter
   .post("/", createUser)
   .all("/*", authenticateToken)
-  .get("/:id", findUser)
-  .put("/:id", updateUser)
+  .get("/", findUser)
+  .put("/", updateUser)
 ;
 
 export { userRouter };
