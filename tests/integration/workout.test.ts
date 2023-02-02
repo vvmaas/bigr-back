@@ -69,6 +69,7 @@ describe("GET /workout", () => {
           name: workout.name,
           userId: workout.userId,
           stage: workout.stage,
+          deleted: workout.deleted,
           createdAt: workout.createdAt.toISOString(),
           updatedAt: workout.updatedAt.toISOString()
         }
@@ -123,6 +124,7 @@ describe("GET /workout/:id", () => {
           name: workout.name,
           userId: workout.userId,
           stage: workout.stage,
+          deleted: workout.deleted,
           exercises: [],
           createdAt: workout.createdAt.toISOString(),
           updatedAt: workout.updatedAt.toISOString()
@@ -246,7 +248,7 @@ describe("POST /workout", () => {
   });
 });
 
-describe("PUT /workout", () => {
+describe("PUT /workout/:id", () => {
   it("should respond with status 401 if no token is given", async () => {
     const response = await server.put("/workout/1");
         
@@ -352,6 +354,79 @@ describe("PUT /workout", () => {
       
         expect(response.status).toBe(httpStatus.BAD_REQUEST);
       });
+    });
+  });
+});
+
+describe("DELETE /workout/:id", () => {
+  it("should respond with status 401 if no token is given", async () => {
+    const response = await server.delete("/workout/1");
+        
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+        
+  it("should respond with status 401 if given token is not valid", async () => {
+    const token = faker.lorem.word();
+    const response = await server.delete("/workout/1").set("Authorization", `Bearer ${token}`);
+        
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+        
+  it("should respond with status 401 if there is no session for given token", async () => {
+    const userWithoutSession = await createUser();
+    const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
+    const response = await server.delete("/workout/1").set("Authorization", `Bearer ${token}`);
+        
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+      
+  describe("when token is valid", () => {
+    it("should respond with status 200 when id is valid", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const workout = await createWorkout(user.id);
+      
+      const response = await server.delete(`/workout/${workout.id}`).set("Authorization", `Bearer ${token}`);
+      
+      expect(response.status).toBe(httpStatus.OK);
+    });
+  
+    it("should update delete property of workout on db", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const workout = await createWorkout(user.id);
+      
+      await server.delete(`/workout/${workout.id}`).set("Authorization", `Bearer ${token}`);
+          
+      const workoutFind = await prisma.workout.findUnique({
+        where: {
+          id: workout.id
+        }
+      });
+          
+      expect(workoutFind).toEqual(
+        expect.objectContaining({
+          deleted: true
+        }),
+      );
+    });
+
+    it("should respond with status 400 when id is invalid", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      
+      const response = await server.delete("/workout/a").set("Authorization", `Bearer ${token}`);
+      
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+
+    it("should respond with status 400 when id is invalid", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      
+      const response = await server.delete("/workout/-1").set("Authorization", `Bearer ${token}`);
+      
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
     });
   });
 });

@@ -4,7 +4,8 @@ import { Workout } from "@prisma/client";
 async function findAll(userId: number) {
   return prisma.workout.findMany({
     where: {
-      userId
+      userId,
+      deleted: false
     }
   });
 }
@@ -36,14 +37,26 @@ async function update(id: number, workout: UpdateWorkoutParams) {
   });
 }
 
-export type CreateWorkoutParams = Omit<Workout, "id" | "stage" | "createdAt" | "updatedAt">
-export type UpdateWorkoutParams = Omit<Workout, "id" | "userId" |"createdAt" | "updatedAt">
+async function deleteWorkout(id: number) {
+  return prisma.workout.update({
+    where: {
+      id
+    },
+    data: {
+      deleted: true
+    }
+  });
+}
+
+export type CreateWorkoutParams = Omit<Workout, "id" | "stage" | "deleted" | "createdAt" | "updatedAt">
+export type UpdateWorkoutParams = Omit<Workout, "id" | "userId" | "deleted" |"createdAt" | "updatedAt">
   
 const workoutRepository = {
   findAll,
   find,
   create,
-  update
+  update,
+  deleteWorkout
 };
   
 export default workoutRepository;

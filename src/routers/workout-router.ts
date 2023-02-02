@@ -1,4 +1,4 @@
-import { getWorkout, getWorkouts, updateWorkout, postWorkout } from "@/modules/controllers";
+import { getWorkout, getWorkouts, updateWorkout, postWorkout, deleteWorkout } from "@/modules/controllers";
 import { Router } from "express";
 import { authenticateToken } from "@/middlewares";
 
@@ -10,6 +10,7 @@ workoutRouter
   .get("/:id", getWorkout)
   .post("/", postWorkout)
   .put("/:id", updateWorkout) 
+  .delete("/:id", deleteWorkout) 
 ;
 
 export { workoutRouter };

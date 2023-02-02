@@ -35,11 +35,17 @@ async function updateWorkout(id: number, params: UpdateWorkoutParams) {
   return workout;
 } 
 
+async function deleteWorkout(id: number) {
+  const workout = await workoutRepository.deleteWorkout(id);
+  return workout;
+} 
+
 const workoutService = {
   getWorkouts,
   getWorkout,
   postWorkout,
-  updateWorkout
+  updateWorkout,
+  deleteWorkout
 }; 
 
 export default workoutService;

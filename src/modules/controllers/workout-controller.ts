@@ -58,3 +58,14 @@ export async function updateWorkout(req: AuthenticatedRequest, res: Response) {
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }
 }
+
+export async function deleteWorkout(req: AuthenticatedRequest, res: Response) {
+  const { id } = req.params;
+
+  try {
+    await workoutService.deleteWorkout(Number(id));
+    return res.sendStatus(httpStatus.OK);    
+  } catch (error) {
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+}
