@@ -12,7 +12,7 @@ async function postDiary(params: CreateDiaryLogParams) {
   await checkWorkoutStage(params.workoutId, params.stage);
   const workout = await workoutRepository.find(params.workoutId);
 
-  await stageUp(workout, params);
+  return await stageUp(workout, params);
 }
 
 async function getDiary(userId: number) {
@@ -37,12 +37,12 @@ async function checkWorkoutStage(workoutId: number, stage: number) {
 }
 
 async function stageUp(workout: Workout, params: CreateDiaryLogParams) {
-  await diaryRepository.create(exclude(params, "workoutExercises"));
   await workoutRepository.update(workout.id, {
     name: workout.name,
-    stage: params.stage
+    stage: params.stage 
   });
   await workoutExerciseRepository.createMany(params.workoutExercises);
+  return await diaryRepository.create(exclude(params, "workoutExercises"));
 }
 
 const diaryService = {

@@ -5,8 +5,8 @@ import httpStatus from "http-status";
 
 export async function createDiaryLog(req: AuthenticatedRequest, res: Response) {
   try {
-    await diaryService.postDiary({ ...req.body });
-    return res.sendStatus(httpStatus.OK);    
+    const diary = await diaryService.postDiary({ ...req.body });
+    return res.sendStatus(httpStatus.CREATED).send(diary);    
   } catch (error) {
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }

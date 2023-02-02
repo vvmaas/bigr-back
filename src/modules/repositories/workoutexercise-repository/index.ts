@@ -27,7 +27,7 @@ async function createMany(exercises: WorkoutExercise[]) {
         sets: exercise.sets,
         repetitions: exercise.repetitions,
         weight: exercise.weight,
-        stage: exercise.stage
+        stage: exercise.stage + 1
       }
     );
   });
