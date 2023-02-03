@@ -39,7 +39,7 @@ export async function postWorkout(req: AuthenticatedRequest, res: Response) {
       userId: req.userId
     });
     
-    return res.sendStatus(httpStatus.CREATED).send(workout);    
+    return res.status(httpStatus.CREATED).send({ id: workout.id });    
   } catch (error) {
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }

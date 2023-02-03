@@ -7,7 +7,7 @@ export async function createWorkoutExercise(exerciseId: number, workout: Workout
     data: {
       exerciseId,
       workoutId: workout.id,
-      stage: workout.stage === 0 ? 0 : workout.stage + 1,
+      stage: workout.stage,
       weight: faker.datatype.number(),
       repetitions: faker.datatype.number(),
       sets: faker.datatype.number()

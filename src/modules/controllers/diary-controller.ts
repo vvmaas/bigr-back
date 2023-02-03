@@ -21,3 +21,14 @@ export async function getDiary(req: AuthenticatedRequest, res: Response) {
     return res.sendStatus(httpStatus.NOT_FOUND);
   }
 }
+
+export async function deleteDiaryLog(req: AuthenticatedRequest, res: Response) {
+  const { id } = req.params;
+  try {
+    await diaryService.deleteDiary(Number(id));
+    
+    return res.sendStatus(httpStatus.OK);    
+  } catch (error) {
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+}

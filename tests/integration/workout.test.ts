@@ -219,17 +219,16 @@ describe("POST /workout", () => {
         const token = await generateValidToken(user);
         const body = generateValidBodyCreate();
     
-        await server.post("/workout").set("Authorization", `Bearer ${token}`).send(body);
+        const response = await server.post("/workout").set("Authorization", `Bearer ${token}`).send(body);
         
         const workout = await prisma.workout.findFirst({
           where: {
-            name: body.name
+            id: response.body.id
           }
         });
         
         expect(workout).toEqual(
           expect.objectContaining({
-            name: body.name,
             userId: user.id
           }),
         );

@@ -17,6 +17,22 @@ async function find(userId: number) {
   });
 }
 
+async function findLog(id: number) {
+  return prisma.diary.findUnique({
+    where: {
+      id
+    },
+  });
+}
+
+async function deleteLog(id: number) {
+  return prisma.diary.delete({
+    where: {
+      id
+    },
+  });
+}
+
 export type CreateDiaryParams = Omit<Diary, "id" | "createdAt" | "updatedAt">
   
 export type CreateDiaryLogParams = Omit<Diary, "id" | "createdAt" | "updatedAt"> & {
@@ -25,7 +41,9 @@ export type CreateDiaryLogParams = Omit<Diary, "id" | "createdAt" | "updatedAt">
 
 const diaryRepository = {
   create,
-  find
+  find,
+  findLog,
+  deleteLog
 };
   
 export default diaryRepository;

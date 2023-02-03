@@ -9,6 +9,15 @@ async function create(workoutExercise: CreateWEParams) {
   });
 }
 
+async function deleteMany(workoutId: number, stage: number) {
+  return prisma.workoutExercise.deleteMany({
+    where: {
+      workoutId, 
+      stage
+    },
+  });
+}
+
 async function findByStage(workoutId: number, stage: number) {
   return prisma.workoutExercise.findMany({
     where: {
@@ -19,8 +28,8 @@ async function findByStage(workoutId: number, stage: number) {
 }
 
 async function createMany(exercises: WorkoutExercise[]) {
-  exercises.map(async exercise => {
-    await workoutExerciseRepository.create(
+  return exercises.map(async exercise => {
+    await create(
       {
         exerciseId: exercise.exerciseId,
         workoutId: exercise.workoutId,
@@ -38,7 +47,8 @@ export type CreateWEParams = Omit<WorkoutExercise, "id" | "createdAt" | "updated
 const workoutExerciseRepository = {
   create,
   findByStage,
-  createMany
+  createMany,
+  deleteMany
 };
   
 export default workoutExerciseRepository;

@@ -3,7 +3,7 @@ import { prisma } from "@/config";
 import { faker } from "@faker-js/faker";
 import httpStatus from "http-status";
 import supertest from "supertest";
-import { createDiary, createExercise, createUser, createWorkout, createWorkoutExercise } from "../factories";
+import { createDiary, createExercise, createUser, createWorkout, createWorkoutExercise, getWorkout, stageUpWorkout } from "../factories";
 import { cleanDb, generateValidToken } from "../helpers";
 import * as jwt from "jsonwebtoken";
 import { Workout, WorkoutExercise } from "@prisma/client";
@@ -234,3 +234,160 @@ describe("POST /diary", () => {
     });
   });
 });
+
+describe("DELETE /diary/:id", () => {
+  it("should respond with status 401 if no token is given", async () => {
+    const response = await server.delete("/diary/1");
+        
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+        
+  it("should respond with status 401 if given token is not valid", async () => {
+    const token = faker.lorem.word();
+    const response = await server.delete("/diary/1").set("Authorization", `Bearer ${token}`);
+        
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+        
+  it("should respond with status 401 if there is no session for given token", async () => {
+    const userWithoutSession = await createUser();
+    const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
+    const response = await server.delete("/diary/1").set("Authorization", `Bearer ${token}`);
+        
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+  describe("when token is valid", () => {
+    it("should respond with status 200 when id is valid", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const workout = await createWorkout(user.id);
+      const exercise = await createExercise();
+      await createWorkoutExercise(exercise.id, workout);
+      const diary = await createDiary(user.id, workout);
+      await stageUpWorkout(workout.id, diary.stage);
+      await createWorkoutExercise(exercise.id, workout);
+      const workoutStaged = await getWorkout(workout.id);
+      await createWorkoutExercise(exercise.id, workoutStaged);
+      
+      const response = await server.delete(`/diary/${diary.id}`).set("Authorization", `Bearer ${token}`);
+      
+      expect(response.status).toBe(httpStatus.OK);
+    });
+  
+    it("should delete diary from db", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const workout = await createWorkout(user.id);
+      const exercise = await createExercise();
+      await createWorkoutExercise(exercise.id, workout);
+      const diary = await createDiary(user.id, workout);
+      await stageUpWorkout(workout.id, diary.stage);
+      await createWorkoutExercise(exercise.id, workout);
+      const workoutStaged = await getWorkout(workout.id);
+      
+      await createWorkoutExercise(exercise.id, workoutStaged);
+      
+      const response = await server.delete(`/diary/${diary.id}`).set("Authorization", `Bearer ${token}`);
+          
+      const diaryFind = await prisma.diary.findUnique({
+        where: {
+          id: diary.id,
+        }
+      });
+      
+      expect(response.status).toBe(httpStatus.OK);
+      expect(diaryFind).toEqual(null);
+    });
+
+    it("should update workout stage if it was the latest stage", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const workout = await createWorkout(user.id);
+      const exercise = await createExercise();
+      await createWorkoutExercise(exercise.id, workout);
+      const diary = await createDiary(user.id, workout);
+      await stageUpWorkout(workout.id, diary.stage);
+      await createWorkoutExercise(exercise.id, workout);
+      const workoutStaged = await getWorkout(workout.id);
+      await createWorkoutExercise(exercise.id, workoutStaged);
+      
+      await server.delete(`/diary/${diary.id}`).set("Authorization", `Bearer ${token}`);
+          
+      const workoutFind = await prisma.workout.findUnique({
+        where: {
+          id: workout.id
+        }
+      });
+          
+      expect(workoutFind).toEqual(
+        expect.objectContaining({
+          stage: workout.stage,
+        }),
+      );
+    });
+
+    it("should not update workout stage if it was not the latest stage", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const workout = await createWorkout(user.id);
+      const exercise = await createExercise();
+      await createWorkoutExercise(exercise.id, workout);
+      const diary = await createDiary(user.id, workout);
+      await stageUpWorkout(workout.id, diary.stage);
+      await createWorkoutExercise(exercise.id, workout);
+      const workoutStaged = await getWorkout(workout.id);
+      await createWorkoutExercise(exercise.id, workoutStaged);
+      const diary2 = await createDiary(user.id, workoutStaged);
+      await stageUpWorkout(workoutStaged.id, diary2.stage);
+      await createWorkoutExercise(exercise.id, workoutStaged);
+      const workoutStaged2 = await getWorkout(workoutStaged.id);
+      await createWorkoutExercise(exercise.id, workoutStaged2);
+      
+      await server.delete(`/diary/${diary.id}`).set("Authorization", `Bearer ${token}`);
+          
+      const workoutFind = await prisma.workout.findUnique({
+        where: {
+          id: workout.id
+        }
+      });
+          
+      expect(workoutFind).toEqual(
+        expect.objectContaining({
+          stage: diary2.stage,
+        }),
+      );
+    });
+
+    it("should delete workoutExercises of given stage", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const workout = await createWorkout(user.id);
+      const exercise = await createExercise();
+      await createWorkoutExercise(exercise.id, workout);
+      const diary = await createDiary(user.id, workout);
+      await stageUpWorkout(workout.id, diary.stage);
+      const workoutStaged = await getWorkout(workout.id);
+      const workoutExerciseStaged = await createWorkoutExercise(exercise.id, workoutStaged);
+      
+      await server.delete(`/diary/${diary.id}`).set("Authorization", `Bearer ${token}`);
+          
+      const workoutExerciseFind = await prisma.workoutExercise.findUnique({
+        where: {
+          id: workoutExerciseStaged.id
+        }
+      });
+          
+      expect(workoutExerciseFind).toEqual(null);
+    });
+  
+    it("should respond with status 400 when id is invalid", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      
+      const response = await server.delete("/diary/-1").set("Authorization", `Bearer ${token}`);
+      
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+  });
+});
+

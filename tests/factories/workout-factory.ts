@@ -10,3 +10,22 @@ export async function createWorkout(userId: number): Promise<Workout> {
     },
   });
 }
+
+export async function getWorkout(id: number): Promise<Workout> {
+  return prisma.workout.findUnique({
+    where: {
+      id
+    },
+  });
+}
+
+export async function stageUpWorkout(id: number, stage: number): Promise<Workout> {
+  return prisma.workout.update({
+    where: {
+      id
+    },
+    data: {
+      stage
+    },
+  });
+}
