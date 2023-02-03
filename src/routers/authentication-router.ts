@@ -1,10 +1,13 @@
 import { Router } from "express";
-import { singInPost } from "@/modules/controllers/authentication-controller";
+import { singInPost, logOut } from "@/modules/controllers/authentication-controller";
+import { authenticateToken } from "@/middlewares";
 
 const authenticationRouter = Router();
 
 authenticationRouter
   .post("/sign-in", singInPost)
+  .all("/*", authenticateToken)
+  .delete("/log-out", logOut)
 ;
 
 export { authenticationRouter };

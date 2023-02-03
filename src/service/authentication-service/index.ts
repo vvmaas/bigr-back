@@ -44,6 +44,15 @@ async function createSession(userId: number) {
   return token;
 }
 
+async function deleteSession( token: string) {
+  const session = await sessionRepository.find(
+    token,
+  );
+  const deleted = await sessionRepository.deleteSession(session.id);
+
+  return deleted;
+}
+
 async function validatePasswordOrFail(password: string, userPassword: string) {
   const isPasswordValid = await bcrypt.compare(password, userPassword);
   if (!isPasswordValid) throw invalidCredentialsError();
@@ -60,6 +69,7 @@ type GetUserOrFailResult = Pick<User, "id" | "email" | "password">;
 
 const authenticationService = {
   signIn,
+  deleteSession
 };
 
 export default authenticationService;

@@ -23,6 +23,7 @@ export async function authenticateToken(req: AuthenticatedRequest, res: Response
     });
     if (!session) return generateUnauthorizedResponse(res);
 
+    req.token = token;
     req.userId = userId;
     //TODO mudar aqui
     return next();
@@ -39,4 +40,5 @@ export type AuthenticatedRequest = Request & JWTPayload;
 
 type JWTPayload = {
   userId: number;
+  token: string;
 };

@@ -1,5 +1,6 @@
 import authenticationService from "@/service/authentication-service";
 import { SignInParams } from "@/service/authentication-service";
+import { AuthenticatedRequest } from "@/middlewares";
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 
@@ -14,5 +15,16 @@ export async function singInPost(req: Request, res: Response) {
       return res.sendStatus(httpStatus.UNAUTHORIZED);
     }
     return res.status(httpStatus.BAD_REQUEST).send({});
+  }
+}
+
+export async function logOut(req: AuthenticatedRequest, res: Response) {
+  const { token } = req;
+  
+  try {
+    await authenticationService.deleteSession(token);
+    return res.sendStatus(httpStatus.OK);
+  } catch (error) {
+    return res.sendStatus(httpStatus.BAD_REQUEST);
   }
 }
