@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:13
+    container_name: db_bigr
+    restart: always
+    ports:
+      - 2345:5432
+    env_file:
+      - .env.development
+    networks:
+      - bigr_network
+    volumes:
+      - .:/usr/src/
+
+  node_app:
+    container_name: node_app
+    build: . 
+    ports:
+      - 80:4000
+    depends_on:
+      - db 
+    env_file:
+      - .env.development 
+    networks:
+      - bigr_network
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+
+  volumes:
+    postgres:
+
+networks:
+  bigr_network:
+    driver: bridge

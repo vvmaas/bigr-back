@@ -62,7 +62,7 @@ export type SignInParams = Pick<User, "email" | "password">;
 
 type SignInResult = {
   user: Pick<User, "id" | "email">;
-  token: string;
+  token: string; 
 };
 
 type GetUserOrFailResult = Pick<User, "id" | "email" | "password">;
