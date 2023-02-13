@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "start": "npx prisma migrate dev && npm run dev",
+    "start": "npm run dev:migration:generate && npm run dev:migration:run && npm run dev",
     "migration:run": "prisma migrate deploy",
     "migration:generate": "npm run dev:load-envs prisma migrate dev",
     "lint": "eslint .",
@@ -44,7 +44,7 @@
     "@types/express": "^4.17.15",
     "@types/jest": "^29.2.6",
     "@types/jsonwebtoken": "^9.0.1",
-    "@types/node": "^18.11.18",
+    "@types/node": "^18.13.0",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "dotenv-cli": "^7.0.0",
