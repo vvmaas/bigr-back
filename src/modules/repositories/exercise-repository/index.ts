@@ -8,8 +8,25 @@ async function find(id: number) {
   });
 }
 
+async function findByKeyword(keyword: string) {
+  return await prisma.exercise.findMany({
+    where: {
+      name: {
+        contains: `${keyword}`,
+        mode: "insensitive",
+      },
+    },
+  });
+}
+
+async function findAll() {
+  return prisma.exercise.findMany();
+}
+
 const exerciseRepository = {
-  find
+  find,
+  findAll,
+  findByKeyword
 };
 
 export default exerciseRepository;

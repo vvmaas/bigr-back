@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export default async function seedExercises() {
+export default async function main() {
   await prisma.exercise.createMany({
     data: [
       {
@@ -194,9 +194,9 @@ export default async function seedExercises() {
   });
 }
 
-seedExercises()
-  .catch(() => {
-    process.exit(1);
+main()
+  .catch((e) => {
+    console.error(e);
   })
   .finally(async () => {
     await prisma.$disconnect();
