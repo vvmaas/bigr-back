@@ -2,13 +2,13 @@ import "reflect-metadata";
 import "express-async-errors";
 import express, { Express } from "express";
 import cors from "cors";
-
 import {
   userRouter,
   authenticationRouter,
   workoutRouter,
   diaryRouter,
-  weRouter
+  weRouter,
+  exerciseRouter
 } from "@/routers";
 
 import { loadEnv, connectDb, disconnectDB } from "@/config";
@@ -24,6 +24,7 @@ app
   .use("/auth", authenticationRouter)
   .use("/workout", workoutRouter)
   .use("/workoutexercise", weRouter)
+  .use("/exercise", exerciseRouter)
   .use("/diary", diaryRouter)
 ;
   

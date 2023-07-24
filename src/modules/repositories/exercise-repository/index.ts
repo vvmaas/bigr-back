@@ -8,8 +8,13 @@ async function find(id: number) {
   });
 }
 
+async function findAll() {
+  return prisma.exercise.findMany();
+}
+
 const exerciseRepository = {
-  find
+  find,
+  findAll
 };
 
 export default exerciseRepository;

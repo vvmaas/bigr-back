@@ -14,7 +14,7 @@ export async function singInPost(req: Request, res: Response) {
     if (error.name === "UnauthorizedError" || error.name === "InvalidCredentialsError") {
       return res.sendStatus(httpStatus.UNAUTHORIZED);
     }
-    return res.status(httpStatus.BAD_REQUEST).send({});
+    return res.status(httpStatus.BAD_REQUEST).send(error);
   }
 }
 
