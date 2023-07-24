@@ -23,3 +23,14 @@ export async function getExercise(req: AuthenticatedRequest, res: Response) {
     return res.sendStatus(httpStatus.NOT_FOUND);
   }
 }
+
+export async function getExerciseByKeyword(req: AuthenticatedRequest, res: Response) {
+  const { keyword } = req.params;
+  try {
+    const exercise = await exerciseService.getExerciseByKeyword(keyword);
+    
+    return res.status(httpStatus.OK).send(exercise); 
+  } catch (error) {
+    return res.sendStatus(httpStatus.NOT_FOUND);
+  }
+}

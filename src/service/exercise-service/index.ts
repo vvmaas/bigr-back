@@ -19,9 +19,18 @@ async function getExercise(id: number): Promise<Exercise> {
   return exercise;
 }
 
+async function getExerciseByKeyword(keyword: string): Promise<Exercise[]> {
+  const exercise = await exerciseRepository.findByKeyword(keyword);
+  if(!exercise) {
+    throw notFoundError();
+  }
+  return exercise;
+}
+
 const exerciseService = {
   getExercises,
-  getExercise
+  getExercise,
+  getExerciseByKeyword
 };
 
 export default exerciseService;

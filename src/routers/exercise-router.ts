@@ -1,4 +1,4 @@
-import { getExercises, getExercise } from "@/modules/controllers/exercise-controller";
+import { getExercises, getExercise, getExerciseByKeyword } from "@/modules/controllers/exercise-controller";
 import { Router } from "express";
 import { authenticateToken } from "@/middlewares";
 
@@ -8,6 +8,7 @@ exerciseRouter
   .all("/*", authenticateToken)
   .get("/", getExercises)
   .get("/:id", getExercise)
+  .get("/keyword/:keyword", getExerciseByKeyword)
 ;
 
 export { exerciseRouter };
