@@ -7,6 +7,8 @@ const weRouter = Router();
 weRouter
   .all("/*", authenticateToken)
   .post("/", createWE)
+  .get("/", )
+  .delete("/", )
 ;
 
 export { weRouter };

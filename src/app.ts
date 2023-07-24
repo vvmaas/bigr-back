@@ -6,7 +6,6 @@ import {
   userRouter,
   authenticationRouter,
   workoutRouter,
-  diaryRouter,
   weRouter,
   exerciseRouter
 } from "@/routers";
@@ -25,7 +24,6 @@ app
   .use("/workout", workoutRouter)
   .use("/workoutexercise", weRouter)
   .use("/exercise", exerciseRouter)
-  .use("/diary", diaryRouter)
 ;
   
 export function init(): Promise<Express> {
