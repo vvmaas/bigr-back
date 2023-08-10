@@ -7,7 +7,8 @@ import {
   authenticationRouter,
   workoutRouter,
   weRouter,
-  exerciseRouter
+  exerciseRouter,
+  weightRouter
 } from "@/routers";
 
 import { loadEnv, connectDb, disconnectDB } from "@/config";
@@ -20,6 +21,7 @@ app
   .use(express.json())
   .get("/health", (_req, res) => res.send("OK!"))
   .use("/users", userRouter)
+  .use("/weight", weightRouter)
   .use("/auth", authenticationRouter)
   .use("/workout", workoutRouter)
   .use("/workoutexercise", weRouter)

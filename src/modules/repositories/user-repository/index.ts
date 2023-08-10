@@ -36,7 +36,7 @@ async function findById(id: number) {
 
 export type CreateUserParams = Pick<User, "email" | "password">;
 
-export type UpdateUserParams = Pick<User, "height" | "weight" | "name">;
+export type UpdateUserParams = Pick<User, "height" | "name">;
   
 const userRepository = {
   create,

@@ -17,7 +17,6 @@ model User {
   password   String?       @db.VarChar(255)
   name       String       @default("")
   height    Int           @default(0)
-  weight    Float           @default(0)
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   Session    Session[]

@@ -16,7 +16,7 @@ export async function createUser({ email, password }: CreateUserParams) {
 }
 
 export async function updateUser(data: UpdateUserParams, id: number) {
-  if(!data || !data.name || !data.weight || !data.height) {
+  if(!data || !data.name || !data.height) {
     throw badRequestError();
   }
 

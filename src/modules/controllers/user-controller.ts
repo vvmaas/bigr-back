@@ -27,7 +27,6 @@ export async function updateUser(req: AuthenticatedRequest, res: Response) {
     return res.status(httpStatus.OK).send({
       id: update.id,
       name: update.name,
-      weight: update.weight,
       height: update.height,
     });
   } catch (error) {

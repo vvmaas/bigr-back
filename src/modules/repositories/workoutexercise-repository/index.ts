@@ -9,20 +9,20 @@ async function create(workoutExercise: CreateWEParams) {
   });
 }
 
-async function deleteMany(workoutId: number, stage: number) {
+//turn into deleted: true
+async function deleteMany(workoutId: number) {
   return prisma.workoutExercise.deleteMany({
     where: {
-      workoutId, 
-      stage
+      workoutId,
     },
   });
 }
 
-async function findByStage(workoutId: number, stage: number) {
+async function findByStage(workoutId: number) {
   return prisma.workoutExercise.findMany({
     where: {
-      stage,
-      workoutId
+      workoutId,
+      lastOne: true
     }
   });
 }
@@ -31,12 +31,14 @@ async function createMany(exercises: WorkoutExercise[]) {
   return exercises.map(async exercise => {
     await create(
       {
+        userId: exercise.userId,
         exerciseId: exercise.exerciseId,
         workoutId: exercise.workoutId,
         sets: exercise.sets,
         repetitions: exercise.repetitions,
         weight: exercise.weight,
-        stage: exercise.stage + 1
+        lastOne: true,
+        deleted: false
       }
     );
   });

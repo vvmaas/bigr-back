@@ -48,7 +48,7 @@ async function deleteWorkout(id: number) {
   });
 }
 
-export type CreateWorkoutParams = Omit<Workout, "id" | "stage" | "deleted" | "createdAt" | "updatedAt">
+export type CreateWorkoutParams = Omit<Workout, "id" | "deleted" | "createdAt" | "updatedAt">
 export type UpdateWorkoutParams = Omit<Workout, "id" | "userId" | "deleted" |"createdAt" | "updatedAt">
   
 const workoutRepository = {

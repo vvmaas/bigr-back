@@ -9,7 +9,7 @@ async function getWorkouts(userId: number) {
 
 async function getWorkout(id: number, userId: number) {
   const workout = await workoutRepository.find(id);
-  const exercises = await workoutExerciseRepository.findByStage(id, workout.stage);
+  const exercises = await workoutExerciseRepository.findByStage(id);
 
   if(workout.userId !== userId) {
     throw unauthorizedError();
