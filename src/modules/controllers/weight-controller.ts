@@ -3,56 +3,12 @@ import { AuthenticatedRequest } from "@/middlewares";
 import { Response } from "express";
 import httpStatus from "http-status";
 
-export async function getWeight(req: AuthenticatedRequest, res: Response) {
-  const { userId } = req;
-
-  try {
-    const weight = await weightService.getWeight(userId);
-    return res.status(httpStatus.OK).send(weight); 
-  } catch (error) {
-    return res.sendStatus(httpStatus.NOT_FOUND);
-  }
-}
-
-export async function getLowerWeight(req: AuthenticatedRequest, res: Response) {
-  const { userId } = req;
-
-  try {
-    const weight = await weightService.getHigherOrLower(userId, false);
-    return res.status(httpStatus.OK).send(weight); 
-  } catch (error) {
-    return res.sendStatus(httpStatus.NOT_FOUND);
-  }
-}
-
-export async function getHigherWeight(req: AuthenticatedRequest, res: Response) {
-  const { userId } = req;
-
-  try {
-    const weight = await weightService.getHigherOrLower(userId, true);
-    return res.status(httpStatus.OK).send(weight); 
-  } catch (error) {
-    return res.sendStatus(httpStatus.NOT_FOUND);
-  }
-}
-
 export async function getWeights(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
 
   try {
     const weights = await weightService.getWeights(userId);
     return res.status(httpStatus.OK).send(weights); 
-  } catch (error) {
-    return res.sendStatus(httpStatus.NOT_FOUND);
-  }
-}
-
-export async function getWeightById(req: AuthenticatedRequest, res: Response) {
-  const { id } = req.params;
-
-  try {
-    const weight = await weightService.getWeightById(Number(id));
-    return res.status(httpStatus.OK).send(weight); 
   } catch (error) {
     return res.sendStatus(httpStatus.NOT_FOUND);
   }

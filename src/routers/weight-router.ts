@@ -7,11 +7,7 @@ const weightRouter = Router();
 weightRouter
   .all("/*", authenticateToken)
   .post("/", weightController.postWeight)
-  .get("/", weightController.getWeight)
-  .get("/all", weightController.getWeights)
-  .get("/lower", weightController.getLowerWeight)
-  .get("/higher", weightController.getHigherWeight)
-  .get("/:id", weightController.getWeightById)
+  .get("/", weightController.getWeights)
   .put("/:id", weightController.editWeight)
   .delete("/:id", weightController.deleteWeight)
 ;
