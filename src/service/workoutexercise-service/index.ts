@@ -1,8 +1,15 @@
-import workoutExerciseRepository from "@/modules/repositories/workoutexercise-repository";
+import workoutExerciseRepository, { CreateWEParams } from "@/modules/repositories/workoutexercise-repository";
 import workoutRepository from "@/modules/repositories/workout-repository";
 import exerciseRepository from "@/modules/repositories/exercise-repository";
-import { CreateWEParams } from "@/modules/repositories/workoutexercise-repository";
 import { invalidDataError, unauthorizedError } from "@/errors";
+
+async function getWEByWorkout(workoutId: number) {
+  const workout = await workoutRepository.find(workoutId);
+  if(!workout) {
+    throw invalidDataError();
+  }
+  await workoutExerciseRepository.findByWorkout(workoutId);
+}
 
 async function postWE(params: CreateWEParams, userId: number) {
   const workout = await workoutRepository.find(params.workoutId);
@@ -18,6 +25,7 @@ async function postWE(params: CreateWEParams, userId: number) {
 
 const workoutExerciseService = {
   postWE,
+  getWEByWorkout
 };
 
 export default workoutExerciseService;

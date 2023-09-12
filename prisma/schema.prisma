@@ -57,7 +57,7 @@ model Workout {
 model Exercise {
   id        Int      @id @default(autoincrement())
   name      String
-  namePt     String
+  namePt    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   WorkoutExercise    WorkoutExercise[]
@@ -91,11 +91,19 @@ model WorkoutExercise {
   Exercise      Exercise     @relation(fields: [exerciseId], references: [id])
   workoutId    Int
   Workout      Workout     @relation(fields: [workoutId], references: [id])
+  deleted   Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  WorkoutExerciseLog    WorkoutExerciseLog[]
+}
+
+model WorkoutExerciseLog {
+  id        Int      @id @default(autoincrement())
+  workoutExerciseId    Int
+  WorkoutExercise      WorkoutExercise     @relation(fields: [workoutExerciseId], references: [id])
   sets      Int
   repetitions      Int
   weight      Int
-  lastOne   Boolean @default(true)
-  deleted   Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

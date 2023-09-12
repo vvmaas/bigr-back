@@ -14,3 +14,14 @@ export async function createWE(req: AuthenticatedRequest, res: Response) {
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }
 }
+
+export async function getWEByWorkout(req: AuthenticatedRequest, res: Response) {
+  const { workoutId } = req.params;
+
+  try {
+    const workout = await workoutExerciseService.getWEByWorkout(Number(workoutId));
+    return res.status(httpStatus.CREATED).send(workout);    
+  } catch (error) {
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+}

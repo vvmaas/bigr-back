@@ -6,6 +6,9 @@ async function findAll(userId: number) {
     where: {
       userId,
       deleted: false
+    },
+    orderBy: {
+      updatedAt: "desc"
     }
   });
 }

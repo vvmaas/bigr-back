@@ -7,6 +7,7 @@ import {
   authenticationRouter,
   workoutRouter,
   weRouter,
+  logRouter,
   exerciseRouter,
   weightRouter
 } from "@/routers";
@@ -25,6 +26,7 @@ app
   .use("/auth", authenticationRouter)
   .use("/workout", workoutRouter)
   .use("/workoutexercise", weRouter)
+  .use("/workoutexercise/log", logRouter)
   .use("/exercise", exerciseRouter)
 ;
   
