@@ -1,4 +1,4 @@
-import { createWE, getWEByWorkout } from "@/modules/controllers/workoutexercise-controller";
+import { createWE, getWEByWorkout, deleteWE } from "@/modules/controllers/workoutexercise-controller";
 import { Router } from "express";
 import { authenticateToken } from "@/middlewares";
 
@@ -9,7 +9,7 @@ weRouter
   .post("/", createWE)
   .get("/from/:workoutId", getWEByWorkout)
   .get("/:id", )
-  .delete("/", )
+  .delete("/:id", deleteWE)
 ;
 
 export { weRouter };

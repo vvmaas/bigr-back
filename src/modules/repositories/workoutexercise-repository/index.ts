@@ -1,5 +1,5 @@
 import { prisma } from "@/config";
-import { WorkoutExercise } from "@prisma/client";
+import { Exercise, WorkoutExercise } from "@prisma/client";
 
 async function create(workoutExercise: CreateWEParams) {
   return prisma.workoutExercise.create({
@@ -20,6 +20,17 @@ async function deleteMany(workoutId: number) {
   });
 }
 
+async function deleteById(id: number) {
+  return prisma.workoutExercise.update({
+    where: {
+      id,
+    },
+    data: {
+      deleted: true
+    }
+  });
+}
+
 async function find(id: number) {
   return prisma.workoutExercise.findUnique({
     where: {
@@ -32,17 +43,21 @@ async function findByWorkout(workoutId: number) {
   return prisma.workoutExercise.findMany({
     where: {
       workoutId,
+      deleted: false
+    },
+    include: {
+      Exercise: true,
     }
   });
 }
 
-async function createMany(exercises: WorkoutExercise[]) {
+async function createMany(exercises: Exercise[], workoutId: number, userId: number) {
   return exercises.map(async exercise => {
     await create(
       {
-        userId: exercise.userId,
-        exerciseId: exercise.exerciseId,
-        workoutId: exercise.workoutId,
+        userId: userId,
+        exerciseId: exercise.id,
+        workoutId: Number(workoutId),
         deleted: false
       }
     );
@@ -56,7 +71,8 @@ const workoutExerciseRepository = {
   find,
   findByWorkout,
   createMany,
-  deleteMany
+  deleteMany,
+  deleteById
 };
   
 export default workoutExerciseRepository;
