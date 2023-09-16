@@ -1,4 +1,4 @@
-import { createLog } from "@/modules/controllers/workoutexerciselog-controller";
+import { createLog, findLog } from "@/modules/controllers/workoutexerciselog-controller";
 import { Router } from "express";
 import { authenticateToken } from "@/middlewares";
 
@@ -6,8 +6,8 @@ const logRouter = Router();
 
 logRouter
   .all("/*", authenticateToken)
-  .post("/:id", createLog)
-  .get("/", )
+  .post("/:workoutExerciseId", createLog)
+  .get("/:workoutExerciseId", findLog)
   .delete("/", )
 ;
 
