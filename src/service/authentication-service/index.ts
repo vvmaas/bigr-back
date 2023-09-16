@@ -44,7 +44,7 @@ async function createSession(userId: number) {
   return token;
 }
 
-async function deleteSession( token: string) {
+async function deleteSession(token: string) {
   const session = await sessionRepository.find(
     token,
   );

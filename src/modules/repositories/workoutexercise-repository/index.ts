@@ -1,5 +1,5 @@
 import { prisma } from "@/config";
-import { WorkoutExercise } from "@prisma/client";
+import { Exercise, WorkoutExercise } from "@prisma/client";
 
 async function create(workoutExercise: CreateWEParams) {
   return prisma.workoutExercise.create({
@@ -9,34 +9,56 @@ async function create(workoutExercise: CreateWEParams) {
   });
 }
 
-async function deleteMany(workoutId: number, stage: number) {
-  return prisma.workoutExercise.deleteMany({
+async function deleteMany(workoutId: number) {
+  return prisma.workoutExercise.updateMany({
     where: {
-      workoutId, 
-      stage
+      workoutId,
     },
-  });
-}
-
-async function findByStage(workoutId: number, stage: number) {
-  return prisma.workoutExercise.findMany({
-    where: {
-      stage,
-      workoutId
+    data: {
+      deleted: true
     }
   });
 }
 
-async function createMany(exercises: WorkoutExercise[]) {
+async function deleteById(id: number) {
+  return prisma.workoutExercise.update({
+    where: {
+      id,
+    },
+    data: {
+      deleted: true
+    }
+  });
+}
+
+async function find(id: number) {
+  return prisma.workoutExercise.findUnique({
+    where: {
+      id,
+    }
+  });
+}
+
+async function findByWorkout(workoutId: number) {
+  return prisma.workoutExercise.findMany({
+    where: {
+      workoutId,
+      deleted: false
+    },
+    include: {
+      Exercise: true,
+    }
+  });
+}
+
+async function createMany(exercises: Exercise[], workoutId: number, userId: number) {
   return exercises.map(async exercise => {
     await create(
       {
-        exerciseId: exercise.exerciseId,
-        workoutId: exercise.workoutId,
-        sets: exercise.sets,
-        repetitions: exercise.repetitions,
-        weight: exercise.weight,
-        stage: exercise.stage + 1
+        userId: userId,
+        exerciseId: exercise.id,
+        workoutId: Number(workoutId),
+        deleted: false
       }
     );
   });
@@ -46,9 +68,11 @@ export type CreateWEParams = Omit<WorkoutExercise, "id" | "createdAt" | "updated
 
 const workoutExerciseRepository = {
   create,
-  findByStage,
+  find,
+  findByWorkout,
   createMany,
-  deleteMany
+  deleteMany,
+  deleteById
 };
   
 export default workoutExerciseRepository;

@@ -20,6 +20,9 @@ async function getExercise(id: number): Promise<Exercise> {
 }
 
 async function getExerciseByKeyword(keyword: string): Promise<Exercise[]> {
+  if(!keyword) {
+    return [];
+  }
   const exercise = await exerciseRepository.findByKeyword(keyword);
   if(!exercise) {
     throw notFoundError();

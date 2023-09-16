@@ -6,9 +6,10 @@ import {
   userRouter,
   authenticationRouter,
   workoutRouter,
-  diaryRouter,
   weRouter,
-  exerciseRouter
+  logRouter,
+  exerciseRouter,
+  weightRouter
 } from "@/routers";
 
 import { loadEnv, connectDb, disconnectDB } from "@/config";
@@ -21,11 +22,12 @@ app
   .use(express.json())
   .get("/health", (_req, res) => res.send("OK!"))
   .use("/users", userRouter)
+  .use("/weight", weightRouter)
   .use("/auth", authenticationRouter)
   .use("/workout", workoutRouter)
   .use("/workoutexercise", weRouter)
+  .use("/workoutexercise/log", logRouter)
   .use("/exercise", exerciseRouter)
-  .use("/diary", diaryRouter)
 ;
   
 export function init(): Promise<Express> {

@@ -1,23 +1,28 @@
-import workoutExerciseRepository from "@/modules/repositories/workoutexercise-repository";
+import workoutExerciseRepository, { CreateWEParams } from "@/modules/repositories/workoutexercise-repository";
 import workoutRepository from "@/modules/repositories/workout-repository";
-import exerciseRepository from "@/modules/repositories/exercise-repository";
-import { CreateWEParams } from "@/modules/repositories/workoutexercise-repository";
 import { invalidDataError, unauthorizedError } from "@/errors";
+import { Exercise } from "@prisma/client";
 
-async function postWE(params: CreateWEParams, userId: number) {
-  const workout = await workoutRepository.find(params.workoutId);
-  const exercise = await exerciseRepository.find(params.exerciseId);
-  if(!workout || !exercise) {
+async function getWEByWorkout(workoutId: number) {
+  const workout = await workoutRepository.find(workoutId);
+  if(!workout) {
     throw invalidDataError();
   }
-  if(workout.userId !== userId) {
-    throw unauthorizedError();
-  }
-  await workoutExerciseRepository.create(params);
+  return await workoutExerciseRepository.findByWorkout(workoutId);
+}
+
+async function deleteById(id: number) {
+  await workoutExerciseRepository.deleteById(id);
+}
+
+async function postWE(exercises: Exercise[], workoutId: number, userId: number) {
+  await workoutExerciseRepository.createMany(exercises, workoutId, userId);
 }
 
 const workoutExerciseService = {
   postWE,
+  getWEByWorkout,
+  deleteById
 };
 
 export default workoutExerciseService;

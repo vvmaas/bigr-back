@@ -17,12 +17,21 @@ model User {
   password   String?       @db.VarChar(255)
   name       String       @default("")
   height    Int           @default(0)
-  weight    Int           @default(0)
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   Session    Session[]
-  Diary      Diary[]
   Workout    Workout[]
+  WorkoutExercise    WorkoutExercise[]
+  Weight    Weight[]
+}
+
+model Weight {
+  id        Int      @id @default(autoincrement())
+  value     Float
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Session {
@@ -39,44 +48,62 @@ model Workout {
   userId    Int
   User      User     @relation(fields: [userId], references: [id])
   name      String
-  stage     Int @default(0)
   deleted   Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   WorkoutExercise    WorkoutExercise[]
-  Diary    Diary[]
 }
 
 model Exercise {
   id        Int      @id @default(autoincrement())
   name      String
+  namePt    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   WorkoutExercise    WorkoutExercise[]
+  Target    Target[]
+}
+
+model Group {
+  id        Int      @id @default(autoincrement())
+  name      String
+  namePt     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Target    Target[]
+}
+
+model Target {
+  id        Int      @id @default(autoincrement())
+  exerciseId    Int
+  Exercise      Exercise     @relation(fields: [exerciseId], references: [id])
+  groupId    Int
+  Group      Group     @relation(fields: [groupId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model WorkoutExercise {
   id        Int      @id @default(autoincrement())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
   exerciseId    Int
   Exercise      Exercise     @relation(fields: [exerciseId], references: [id])
   workoutId    Int
   Workout      Workout     @relation(fields: [workoutId], references: [id])
+  deleted   Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  WorkoutExerciseLog    WorkoutExerciseLog[]
+}
+
+model WorkoutExerciseLog {
+  id        Int      @id @default(autoincrement())
+  workoutExerciseId    Int
+  WorkoutExercise      WorkoutExercise     @relation(fields: [workoutExerciseId], references: [id])
   sets      Int
   repetitions      Int
   weight      Int
-  stage       Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Diary {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  User      User     @relation(fields: [userId], references: [id])
-  workoutId    Int
-  Workout      Workout     @relation(fields: [workoutId], references: [id])
-  Date      DateTime
-  stage      Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
